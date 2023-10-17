@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">MedicTime</string>
+    <string name="add_medicine_button_text">+</string>
+</resources>
