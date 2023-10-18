@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace = "be.helha.medictime"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "be.helha.medictime"
