@@ -1,5 +1,7 @@
 package be.helha.medictime.models;
 
+import androidx.annotation.NonNull;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
@@ -32,6 +34,12 @@ public class Medicine {
         this.mName = mName;
     }
     public String getName() {
+        return mName;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
         return mName;
     }
 

@@ -12,11 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 import be.helha.medictime.R;
 import be.helha.medictime.models.Medicine;
@@ -32,14 +34,13 @@ public class AddMedicineFragment extends Fragment {
     private Switch mEveningSwitch;
     private String medicineName;
     private int medicineDefaultTime;
-    private Boolean morningIntake = false;
-    private Boolean lunchTimeIntake = false;
-    private Boolean eveningIntake = false;
     private MedicineLab lab;
+    private Medicine medicine;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         lab = MedicineLab.get(getContext());
+        medicine = new Medicine();
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,6 +54,7 @@ public class AddMedicineFragment extends Fragment {
                 // Vérifie si l'on a appuyé sur le bouton 'Done' ou 'Enter' du clavier
                 if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
                     medicineName = mMedicineNameEditText.getText().toString();
+                    medicine.setName(medicineName);
                 }
                 return false;
             }
@@ -62,52 +64,51 @@ public class AddMedicineFragment extends Fragment {
         mDefaultTimeEditText.setOnEditorActionListener((v1, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
                 medicineDefaultTime = Integer.parseInt(mDefaultTimeEditText.getText().toString());
+                medicine.setFirstEndDate(medicineDefaultTime); // attribue la date de fin
             }
             return false;
         });
 
         mMorningSwitch = v.findViewById(R.id.morning_switch_add);
-        if (mMorningSwitch.isChecked()) {
-            morningIntake = true;
-        }
+        mMorningSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    medicine.setMorningIntake();
+                }
+            }
+        });
 
         mLunchTimeSwitch = v.findViewById(R.id.lunchtime_switch_add);
-        if (mLunchTimeSwitch.isChecked()) {
-            lunchTimeIntake = true;
-        }
+        mLunchTimeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    medicine.setLunchTimeIntake();
+                }
+            }
+        });
 
         mEveningSwitch = v.findViewById(R.id.evening_switch_add);
-        if (mEveningSwitch.isChecked()) {
-            eveningIntake = true;
-        }
+        mEveningSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    medicine.setEveningIntake();
+                }
+            }
+        });
 
         mAddMedicineButton = v.findViewById(R.id.add_medicine_add_button);
         mAddMedicineButton.setOnClickListener(e -> {
-            Medicine medicine = new Medicine(); // attribue un ID et la date de début
-            medicine.setName(medicineName); // attribue le nom
-            medicine.setFirstEndDate(medicineDefaultTime); // attribue la date de fin
-            if (morningIntake) {
-                medicine.setMorningIntake();
-            }
-            if (lunchTimeIntake) {
-                medicine.setLunchTimeIntake();
-            }
-            if (eveningIntake) {
-                medicine.setEveningIntake();
-            }
-
             lab.addMedicine(medicine);
             GoToMedicineIntakeFragment();
         });
-
         return v;
     }
 
     private void GoToMedicineIntakeFragment() {
         MedicineIntakeFragment medicineIntakeFragment = new MedicineIntakeFragment();
-        //Bundle args = new Bundle();
-        //args.putSerializable(MedicineIntakeFragment.MEDICINE, (Serializable) medicine);
-        //medicineIntakeFragment.setArguments(args);
         FragmentManager fm = requireActivity().getSupportFragmentManager();
         fm.beginTransaction()
                 .replace(R.id.medicine_intake_fragment_container, medicineIntakeFragment)

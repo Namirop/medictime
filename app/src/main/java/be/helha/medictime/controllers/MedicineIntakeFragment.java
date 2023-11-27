@@ -24,7 +24,6 @@ import be.helha.medictime.models.Medicine;
 import be.helha.medictime.models.MedicineLab;
 
 public class MedicineIntakeFragment extends Fragment {
-    public static final String MEDICINE = "medicine_id";
     private Medicine mMedicine;
     private UUID medicineId;
     private Button mAddMedicineButton;
@@ -43,18 +42,6 @@ public class MedicineIntakeFragment extends Fragment {
     // Permet d'initialiser les widgets avec leur listeners dans le cas d'un fragment, et de retourner la vue qui sera utilisée dans CrimeActivity
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        // Récupérez les arguments
-        /*Bundle args = getArguments();
-        if (args != null) {
-            medicineId = (UUID) args.getSerializable(MEDICINE);
-            mMedicines = MedicineLab.get(getContext()).getMedicines();
-            for (Medicine medicine : mMedicines) {
-                if (medicine.getId().equals(medicineId)) {
-                    mMedicine = medicine;
-                }
-            }
-        }*/
 
         // Permet de récupérer les éléments que l'on a sauvegardé dans le Bundle, depuis la méthode onSaveInstanceState
         if(savedInstanceState != null) {
