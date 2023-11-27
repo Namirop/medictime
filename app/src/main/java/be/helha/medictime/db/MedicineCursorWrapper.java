@@ -15,20 +15,20 @@ public class MedicineCursorWrapper extends CursorWrapper {
         super(cursor);
     }
 
-    /*
-    public Crime getCrime()
+    public Medicine getMedicine()
     {
-        String uuidString = getString(getColumnIndex(MedicineDbSchema.CrimeTable.cols.UUID));
-        String title = getString(getColumnIndex(MedicineDbSchema.CrimeTable.cols.TITLE));
-        long date = getLong(getColumnIndex(MedicineDbSchema.CrimeTable.cols.DATE));
-        int isSolved = getInt(getColumnIndex(MedicineDbSchema.CrimeTable.cols.SOLVED));
+        String uuidString = getString(getColumnIndex(MedicineDbSchema.MedicineTable.cols.UUID));
+        String name = getString(getColumnIndex(MedicineDbSchema.MedicineTable.cols.NAME));
+        //int default_intake_time = getInt(getColumnIndex(MedicineDbSchema.MedicineTable.cols.DEFAULT_INTAKE_TIME));
+        long start_date = getLong(getColumnIndex(MedicineDbSchema.MedicineTable.cols.START_DATE));
+        long end_date = getLong(getColumnIndex(MedicineDbSchema.MedicineTable.cols.END_DATE));
 
 
-        Crime crime = new Crime(UUID.fromString(uuidString));
-        crime.setTitle(title);
-        crime.setDate(new Date(date));
-        crime.setSolved(isSolved!=0);
-        return crime;
+        Medicine medicine = new Medicine(UUID.fromString(uuidString));
+        medicine.setName(name);
+        //medicine.setDefaultTime(default_intake_time);
+        medicine.setStartDate(new Date(start_date));
+        medicine.setEndDate(new Date(end_date));
+        return medicine;
     }
-    */
 }

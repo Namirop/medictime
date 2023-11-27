@@ -3,6 +3,7 @@ package be.helha.medictime.db;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import be.helha.medictime.db.MedicineDbSchema.MedicineTable;
 
 public class MedicineBaseHelper extends SQLiteOpenHelper {
     private static final int VERSION = 1;
@@ -12,10 +13,11 @@ public class MedicineBaseHelper extends SQLiteOpenHelper {
     }
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE "+ MedicineDbSchema.MedicineTable.NAME + "("
+        db.execSQL("CREATE TABLE "+ MedicineTable.NAME + "("
                 + "_id integer PRIMARY KEY AUTOINCREMENT, "
-                + MedicineDbSchema.MedicineTable.cols.UUID + ", " + MedicineDbSchema.MedicineTable.cols.TITLE + ", "
-                + MedicineDbSchema.MedicineTable.cols.DATE + ", " + MedicineDbSchema.MedicineTable.cols.SOLVED + ")"
+                + MedicineTable.cols.UUID + ", " + MedicineTable.cols.NAME + ", "
+                + MedicineTable.cols.START_DATE + ", " + MedicineTable.cols.END_DATE + ", " + MedicineTable.cols.MORNING_INTAKE + ", "
+                + MedicineTable.cols.LUNCH_TIME_INTAKE + ", " + MedicineTable.cols.EVENING_INTAKE + ")"
         );
     }
     @Override
