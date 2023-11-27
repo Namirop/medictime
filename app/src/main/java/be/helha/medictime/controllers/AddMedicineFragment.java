@@ -97,13 +97,13 @@ public class AddMedicineFragment extends Fragment {
             }
 
             lab.addMedicine(medicine);
-            GoToMedicineIntakeFragment(medicine);
+            GoToMedicineIntakeFragment();
         });
 
         return v;
     }
 
-    private void GoToMedicineIntakeFragment(Medicine medicine) {
+    private void GoToMedicineIntakeFragment() {
         MedicineIntakeFragment medicineIntakeFragment = new MedicineIntakeFragment();
         //Bundle args = new Bundle();
         //args.putSerializable(MedicineIntakeFragment.MEDICINE, (Serializable) medicine);
