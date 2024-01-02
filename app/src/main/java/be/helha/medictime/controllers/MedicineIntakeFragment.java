@@ -7,8 +7,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -25,8 +27,8 @@ import be.helha.medictime.models.MedicineLab;
 
 public class MedicineIntakeFragment extends Fragment {
     private Medicine mMedicine;
-    private UUID medicineId;
     private Button mAddMedicineButton;
+    private Button mValidButton;
     private Spinner mMedicineSpinner;
     private Switch mMorningSwitch;
     private Switch mLunchTimeSwitch;
@@ -43,12 +45,18 @@ public class MedicineIntakeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        /*
         // Permet de récupérer les éléments que l'on a sauvegardé dans le Bundle, depuis la méthode onSaveInstanceState
         if(savedInstanceState != null) {
             //mCurrentIndex = savedInstanceState.getInt(KEY_INDEX);
-        }
+        }*/
 
         View v = inflater.inflate(R.layout.medicine_intake_fragment, container, false);
+        mMorningSwitch = v.findViewById(R.id.morning_switch_intake);
+        mLunchTimeSwitch = v.findViewById(R.id.lunchtime_switch_intake);
+        mEveningSwitch = v.findViewById(R.id.evening_switch_intake);
+        mStartDate = v.findViewById(R.id.start_date);
+        mEndDate = v.findViewById(R.id.end_date);
 
         // Initialisation du bouton 'Ajouter un médicament' et Listener dessus
         mAddMedicineButton = v.findViewById(R.id.add_medicine_button);
@@ -75,49 +83,90 @@ public class MedicineIntakeFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mMedicineSpinner.setAdapter(adapter);
 
+        mMedicineSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mMedicine = (Medicine) parent.getSelectedItem();
 
-        // Initialisation du switch 'mMorningSwitch' et Listener dessus
-        mMorningSwitch = v.findViewById(R.id.morning_switch_intake);
-        if(mMorningSwitch.isChecked()) {
-            mMedicine.setMorningIntake();
-        }
+                mStartDate.setText(mMedicine.getStartDate().toString());
+                mEndDate.setText(mMedicine.getEndDate().toString());
 
-        // Initialisation du switch 'mLunchTimeSwitch' et Listener dessus
-        mLunchTimeSwitch = v.findViewById(R.id.lunchtime_switch_intake);
-        if(mLunchTimeSwitch.isChecked()) {
-            mMedicine.setLunchTimeIntake();
-        }
 
-        // Initialisation du switch 'mEveningSwitch' et Listener dessus
-        mEveningSwitch = v.findViewById(R.id.evening_switch_intake);
-        if(mEveningSwitch.isChecked()) {
-            mMedicine.setEveningIntake();
-        }
+                if (mMedicine.getMorningIntake()) {
+                    mMorningSwitch.setChecked(true);
+                } else {
+                    mMorningSwitch.setChecked(false);
+                }
+                if (mMedicine.getLunchTimeIntake()) {
+                    mLunchTimeSwitch.setChecked(true);
+                } else {
+                    mLunchTimeSwitch.setChecked(false);
+                }
+                if (mMedicine.getEveningIntake()) {
+                    mEveningSwitch.setChecked(true);
+                } else {
+                    mEveningSwitch.setChecked(false);
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
 
-        // Initialisation du champ 'mStartDate' et Listener dessus
-        mStartDate = v.findViewById(R.id.start_date);
+        mMorningSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mMedicine.setMorningIntake(true);
+                } else if (!isChecked) {
+                    mMedicine.setMorningIntake(false);
+                }
+            }
+        });
+        mLunchTimeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mMedicine.setLunchTimeIntake(true);
+                } else if (!isChecked) {
+                    mMedicine.setLunchTimeIntake(false);
+                }
+            }
+        });
 
-        // Initialisation du champ 'mEndDate' et Listener dessus
-        mEndDate = v.findViewById(R.id.end_date);
+        mEveningSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mMedicine.setEveningIntake(true);
+                } else if (!isChecked) {
+                    mMedicine.setEveningIntake(false);
+                }
+            }
+        });
+
+        mValidButton = v.findViewById(R.id.medicine_intake_add_button);
+        mValidButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
 
         return v;
     }
 
+    /*
     // Permet d'indiquer ce que l'on souhaite sauvegarder quand l'activité est détruite (rotation, ...)
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Log.i(TAG, "onSaveInstanceState");
         //outState.putInt(KEY_INDEX, mCurrentIndex);
-    }
+    }*/
 
     @Override
     public void onResume() {
         super.onResume();
-        updateMedicine();
-    }
-
-    private void updateMedicine() {
-
+        //updateMedicine();
     }
 }

@@ -38,12 +38,11 @@ public class MedicineListActivity extends AppCompatActivity {
         mContainer = findViewById(R.id.medication_list); // conteneur des médicaments
         mAddMedicineIntake = findViewById(R.id.add_medicine_intake_button);
         mAddMedicineIntake.setOnClickListener(v -> {
-
             Intent intent = new Intent(MedicineListActivity.this, MedicineIntakeActivity.class);
             startActivity(intent);
         });
         // Dès que l'activité est créée (lors du lancement, après une rotation, quand on revient à cette activité, ...), on met à jour l'UI
-        updateUI();
+        //updateUI();
     }
 
     private void updateUI() {
@@ -71,10 +70,11 @@ public class MedicineListActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putSerializable(LIST_INDEX, (Serializable) mMedicines);
     }
+
     // Permet de mettre à jour l'UI quand l'activité est relancée (rotation, ...)
     @Override
     protected void onResume() {
         super.onResume();
-        updateUI();
+        //updateUI();
     }
 }

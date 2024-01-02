@@ -43,22 +43,22 @@ public class Medicine {
         return mName;
     }
 
-    public void setMorningIntake() {
-        mMorningIntake = true;
+    public void setMorningIntake(Boolean morningIntake) {
+        mMorningIntake = morningIntake;
     }
     public Boolean getMorningIntake() {
         return mMorningIntake;
     }
 
-    public void setLunchTimeIntake() {
-        mLunchTimeIntake = true;
+    public void setLunchTimeIntake(Boolean lunchTimeIntake) {
+        mLunchTimeIntake = lunchTimeIntake;
     }
     public Boolean getLunchTimeIntake() {
         return mLunchTimeIntake;
     }
 
-    public void setEveningIntake() {
-        mEveningIntake = true;
+    public void setEveningIntake(Boolean eveningIntake) {
+        mEveningIntake = eveningIntake;
     }
     public Boolean getEveningIntake() {
         return mEveningIntake;

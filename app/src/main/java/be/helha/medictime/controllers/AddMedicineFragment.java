@@ -70,32 +70,29 @@ public class AddMedicineFragment extends Fragment {
         });
 
         mMorningSwitch = v.findViewById(R.id.morning_switch_add);
-        mMorningSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    medicine.setMorningIntake();
-                }
+        mMorningSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                medicine.setMorningIntake(true);
+            } else if (!isChecked) {
+                medicine.setMorningIntake(false);
             }
         });
 
         mLunchTimeSwitch = v.findViewById(R.id.lunchtime_switch_add);
-        mLunchTimeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    medicine.setLunchTimeIntake();
-                }
+        mLunchTimeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                medicine.setLunchTimeIntake(true);
+            } else if (!isChecked) {
+                medicine.setLunchTimeIntake(false);
             }
         });
 
         mEveningSwitch = v.findViewById(R.id.evening_switch_add);
-        mEveningSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    medicine.setEveningIntake();
-                }
+        mEveningSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                medicine.setEveningIntake(true);
+            } else if (!isChecked) {
+                medicine.setEveningIntake(false);
             }
         });
 
@@ -103,6 +100,7 @@ public class AddMedicineFragment extends Fragment {
         mAddMedicineButton.setOnClickListener(e -> {
             lab.addMedicine(medicine);
             GoToMedicineIntakeFragment();
+
         });
         return v;
     }
