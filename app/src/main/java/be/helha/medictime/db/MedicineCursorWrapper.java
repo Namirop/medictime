@@ -23,16 +23,16 @@ public class MedicineCursorWrapper extends CursorWrapper {
     {
         String uuidString = getString(getColumnIndex(MedicineDbSchema.MedicineTable.cols.UUID));
         String name = getString(getColumnIndex(MedicineDbSchema.MedicineTable.cols.NAME));
-        long start_date = getLong(getColumnIndex(MedicineDbSchema.MedicineTable.cols.START_DATE));
-        long end_date = getLong(getColumnIndex(MedicineDbSchema.MedicineTable.cols.END_DATE));
+        String start_date = getString(getColumnIndex(MedicineDbSchema.MedicineTable.cols.START_DATE));
+        String end_date = getString(getColumnIndex(MedicineDbSchema.MedicineTable.cols.END_DATE));
         int morningIntake = getInt(getColumnIndex(MedicineDbSchema.MedicineTable.cols.MORNING_INTAKE));
         int lunchTimeIntake = getInt(getColumnIndex(MedicineDbSchema.MedicineTable.cols.LUNCH_TIME_INTAKE));
         int eveningIntake = getInt(getColumnIndex(MedicineDbSchema.MedicineTable.cols.EVENING_INTAKE));
 
         Medicine medicine = new Medicine(UUID.fromString(uuidString));
         medicine.setName(name);
-        medicine.setStartDate(new Date(start_date));
-        medicine.setEndDate(new Date(end_date));
+        medicine.setStartDate(start_date);
+        medicine.setEndDate(end_date);
         if (morningIntake == 1) {
             medicine.setMorningIntake(true);
         } else {

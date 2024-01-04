@@ -72,13 +72,13 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/default_time_edit_text"
-                    android:layout_width="149dp"
+                <NumberPicker
+                    android:layout_width="1dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="70dp"
-                    android:ems="10"
-                    android:inputType="date" />
+                    android:layout_weight="2"
+                    android:id="@+id/default_time_number_picker"
+                    android:layout_marginEnd="30sp"
+                    android:layout_marginStart="50sp" />
 
                 <TextView
                     android:layout_width="0dp"

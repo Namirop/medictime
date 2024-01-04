@@ -1,16 +1,24 @@
 package be.helha.medictime.models;
 
+import android.annotation.SuppressLint;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
-public class Medicine {
+
+// La classe Medicine doit implémenter l'interface Serializable pour permettre la sérialisation.
+// Cela est nécessaire lors de la transmission d'objets entre composants Android tels que des activités.
+public class Medicine implements Serializable {
     private UUID mId;
     public String mName;
-    public Date mStartDate;
-    public Date mEndDate;
+    public String mStartDate;
+    public String mEndDate;
     public Boolean mMorningIntake;
     public Boolean mLunchTimeIntake;
     public Boolean mEveningIntake;
@@ -20,7 +28,6 @@ public class Medicine {
     }
     public Medicine() {
         mId = UUID.randomUUID();
-        mStartDate = new Date();
         mMorningIntake = false;
         mLunchTimeIntake = false;
         mEveningIntake = false;
@@ -64,23 +71,31 @@ public class Medicine {
         return mEveningIntake;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(String startDate) {
         mStartDate = startDate;
     }
-    public Date getStartDate() {
+    public String getStartDate() {
         return mStartDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(String endDate) {
         mEndDate = endDate;
     }
-    public void setFirstEndDate(int defaultTime) {
+
+    public void setStartAndEndDate(int defaultTime) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
+        Date startDate = calendar.getTime();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf1 = new SimpleDateFormat("dd/MM/yyyy");
+        mStartDate = sdf1.format(startDate);
+
         calendar.add(Calendar.DAY_OF_YEAR, defaultTime);
-        this.mEndDate = calendar.getTime();
+        Date endDate = calendar.getTime();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
+        mEndDate = sdf2.format(endDate);
+
     }
-    public Date getEndDate() {
+    public String getEndDate() {
         return mEndDate;
     }
 }

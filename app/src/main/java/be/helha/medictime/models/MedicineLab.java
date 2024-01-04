@@ -41,7 +41,6 @@ public class MedicineLab implements Serializable {
     }
 
     public void addMedicine(Medicine medicine) {
-
         mDatabase.insert(MedicineDbSchema.MedicineTable.NAME, null, getContentValues(medicine));
     }
 
@@ -68,19 +67,15 @@ public class MedicineLab implements Serializable {
 
     private ContentValues getContentValues(Medicine medicine) {
 
-        Boolean morningIntake = medicine.getMorningIntake();
-        Boolean lunchTimeIntake = medicine.getLunchTimeIntake();
-        Boolean eveningIntake = medicine.getEveningIntake();
-
         // Permet de stocker les données dans un objet ContentValues, une sorte de dictionnaire, qui permet de stocker des paires clé/valeur
         ContentValues values = new ContentValues();
         values.put(MedicineDbSchema.MedicineTable.cols.UUID, medicine.getId().toString());
         values.put(MedicineDbSchema.MedicineTable.cols.NAME, medicine.getName());
-        values.put(MedicineDbSchema.MedicineTable.cols.START_DATE, medicine.getStartDate().getTime());
-        values.put(MedicineDbSchema.MedicineTable.cols.END_DATE, medicine.getEndDate().getTime());
-        values.put(MedicineDbSchema.MedicineTable.cols.MORNING_INTAKE, morningIntake);
-        values.put(MedicineDbSchema.MedicineTable.cols.LUNCH_TIME_INTAKE, lunchTimeIntake);
-        values.put(MedicineDbSchema.MedicineTable.cols.EVENING_INTAKE, eveningIntake);
+        values.put(MedicineDbSchema.MedicineTable.cols.START_DATE, medicine.getStartDate());
+        values.put(MedicineDbSchema.MedicineTable.cols.END_DATE, medicine.getEndDate());
+        values.put(MedicineDbSchema.MedicineTable.cols.MORNING_INTAKE, medicine.getMorningIntake());
+        values.put(MedicineDbSchema.MedicineTable.cols.LUNCH_TIME_INTAKE, medicine.getLunchTimeIntake());
+        values.put(MedicineDbSchema.MedicineTable.cols.EVENING_INTAKE, medicine.getEveningIntake());
 
         return values;
     }
@@ -92,5 +87,13 @@ public class MedicineLab implements Serializable {
                 whereClause,
                 whereArgs,
                 null, null, null));
+    }
+
+    public void updateMedicine(Medicine medicine) {
+        String uuidString = medicine.getId().toString();
+        // Permet de stocker les données dans un objet ContentValues, une sorte de dictionnaire, qui permet de stocker des paires clé/valeur
+        ContentValues values = getContentValues(medicine);
+        // On modifie la db avec les nouvelles valeurs à l'uuid correspondant
+        mDatabase.update(MedicineDbSchema.MedicineTable.NAME, values, MedicineDbSchema.MedicineTable.cols.UUID + " = ?", new String[]{uuidString});
     }
 }

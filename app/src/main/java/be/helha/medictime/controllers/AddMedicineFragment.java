@@ -1,24 +1,20 @@
 package be.helha.medictime.controllers;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.Switch;
-import android.widget.TextView;
-
-import java.io.Serializable;
-import java.util.UUID;
 
 import be.helha.medictime.R;
 import be.helha.medictime.models.Medicine;
@@ -26,83 +22,96 @@ import be.helha.medictime.models.MedicineLab;
 
 public class AddMedicineFragment extends Fragment {
 
+    private static final String DEFAULT_TIME = "default_time";
+    private static final String MEDICINE = "medicine";
     private EditText mMedicineNameEditText;
-    private EditText mDefaultTimeEditText;
+    private NumberPicker mDefaultTimeNumberPicker;
     private Button mAddMedicineButton;
     private Switch mMorningSwitch;
     private Switch mLunchTimeSwitch;
     private Switch mEveningSwitch;
-    private String medicineName;
-    private int medicineDefaultTime;
+    private String mMedicineName;
+    private int mMedicineDefaultTime;
     private MedicineLab lab;
-    private Medicine medicine;
+    private Medicine mMedicine;
+
+    // OnCreate est appelé lors de la création de l'activité
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         lab = MedicineLab.get(getContext());
-        medicine = new Medicine();
+        mMedicine = new Medicine();
+        mMedicineDefaultTime = 1;
+
+        // Permet de récupérer les éléments que l'on a sauvegardé dans le Bundle, pour les réutiliser lors de la rotation/destruction de l'activité
+        if (savedInstanceState != null) {
+            mMedicineDefaultTime = savedInstanceState.getInt(DEFAULT_TIME);
+            mMedicine = (Medicine) savedInstanceState.getSerializable(MEDICINE);
+        }
     }
+
+
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.add_medicine_fragment, container, false);
 
-        // Initialisation du bouton 'Ajouter un médicament' et Listener dessus
-        mMedicineNameEditText = v.findViewById(R.id.medicine_name_edit_text);
-        mMedicineNameEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                // Vérifie si l'on a appuyé sur le bouton 'Done' ou 'Enter' du clavier
-                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
-                    medicineName = mMedicineNameEditText.getText().toString();
-                    medicine.setName(medicineName);
-                }
-                return false;
-            }
-        });
+        View view = inflater.inflate(R.layout.add_medicine_fragment, container, false);
 
-        mDefaultTimeEditText = v.findViewById(R.id.default_time_edit_text);
-        mDefaultTimeEditText.setOnEditorActionListener((v1, actionId, event) -> {
+        // Initialisation du TextView + Listener
+        mMedicineNameEditText = view.findViewById(R.id.medicine_name_edit_text);
+        mMedicineNameEditText.setOnEditorActionListener((v, actionId, event) -> {
+
+            // TODO: Vérifier si le nom du médicament n'est pas déjà utilisé
+            // TODO : Faire en sorte que le nom soit sauvegardé quand on quitte le champ
+
+            // Vérifie si l'on a appuyé sur le bouton 'Done' ou 'Enter' du clavier
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
-                medicineDefaultTime = Integer.parseInt(mDefaultTimeEditText.getText().toString());
-                medicine.setFirstEndDate(medicineDefaultTime); // attribue la date de fin
+                mMedicineName = mMedicineNameEditText.getText().toString();
+                mMedicine.setName(mMedicineName);
             }
+            // On retourne false pour indiquer que l'on a pas géré l'évènement et que l'on souhaite que le clavier se ferme
             return false;
         });
 
-        mMorningSwitch = v.findViewById(R.id.morning_switch_add);
+
+        // Initialisation du NumberPicker + Listener
+        mDefaultTimeNumberPicker = view.findViewById(R.id.default_time_number_picker);
+        mDefaultTimeNumberPicker.setMinValue(1);
+        mDefaultTimeNumberPicker.setMaxValue(30);
+        mDefaultTimeNumberPicker.setValue(mMedicineDefaultTime);
+
+        mDefaultTimeNumberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
+            mMedicineDefaultTime = newVal;
+            mMedicine.setStartAndEndDate(mMedicineDefaultTime);
+        });
+
+
+        // Initialisation des Switch + Listener
+        mMorningSwitch = view.findViewById(R.id.morning_switch_add);
         mMorningSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                medicine.setMorningIntake(true);
-            } else if (!isChecked) {
-                medicine.setMorningIntake(false);
-            }
+            mMedicine.setMorningIntake(isChecked);
         });
 
-        mLunchTimeSwitch = v.findViewById(R.id.lunchtime_switch_add);
+        mLunchTimeSwitch = view.findViewById(R.id.lunchtime_switch_add);
         mLunchTimeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                medicine.setLunchTimeIntake(true);
-            } else if (!isChecked) {
-                medicine.setLunchTimeIntake(false);
-            }
+            mMedicine.setLunchTimeIntake(isChecked);
         });
 
-        mEveningSwitch = v.findViewById(R.id.evening_switch_add);
+        mEveningSwitch = view.findViewById(R.id.evening_switch_add);
         mEveningSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                medicine.setEveningIntake(true);
-            } else if (!isChecked) {
-                medicine.setEveningIntake(false);
-            }
+            mMedicine.setEveningIntake(isChecked);
         });
 
-        mAddMedicineButton = v.findViewById(R.id.add_medicine_add_button);
-        mAddMedicineButton.setOnClickListener(e -> {
-            lab.addMedicine(medicine);
+
+        // TODO : Envoyer le médicament à MedicineIntakeFragment pour l'afficher
+        // Initialisation du bouton 'Ajouter un médicament' + Listener
+        mAddMedicineButton = view.findViewById(R.id.add_medicine_add_button);
+        mAddMedicineButton.setOnClickListener(v -> {
+            lab.addMedicine(mMedicine);
             GoToMedicineIntakeFragment();
-
         });
-        return v;
+
+        return view;
     }
 
     private void GoToMedicineIntakeFragment() {
@@ -112,5 +121,13 @@ public class AddMedicineFragment extends Fragment {
                 .replace(R.id.medicine_intake_fragment_container, medicineIntakeFragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    // Permet de sauvegarder les éléments dans le Bundle, avant que l'activité ne soit détruite
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(DEFAULT_TIME, mMedicineDefaultTime);
+        outState.putSerializable(MEDICINE, mMedicine);
     }
 }

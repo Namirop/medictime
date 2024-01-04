@@ -2,6 +2,8 @@ package be.helha.medictime.controllers;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
+import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,14 +13,19 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.EditText;
+import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import be.helha.medictime.R;
@@ -26,6 +33,7 @@ import be.helha.medictime.models.Medicine;
 import be.helha.medictime.models.MedicineLab;
 
 public class MedicineIntakeFragment extends Fragment {
+    private static final String MEDICINE = "medicine";
     private Medicine mMedicine;
     private Button mAddMedicineButton;
     private Button mValidButton;
@@ -33,50 +41,44 @@ public class MedicineIntakeFragment extends Fragment {
     private Switch mMorningSwitch;
     private Switch mLunchTimeSwitch;
     private Switch mEveningSwitch;
-    private EditText mStartDate;
-    private EditText mEndDate;
+    private TextView mStartDate;
+    private TextView mEndDate;
     private List<Medicine> mMedicines;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(savedInstanceState != null) {
+            mMedicine = (Medicine) savedInstanceState.getSerializable(MEDICINE);
+        }
     }
 
     // Permet d'initialiser les widgets avec leur listeners dans le cas d'un fragment, et de retourner la vue qui sera utilisée dans CrimeActivity
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        /*
-        // Permet de récupérer les éléments que l'on a sauvegardé dans le Bundle, depuis la méthode onSaveInstanceState
-        if(savedInstanceState != null) {
-            //mCurrentIndex = savedInstanceState.getInt(KEY_INDEX);
-        }*/
-
-        View v = inflater.inflate(R.layout.medicine_intake_fragment, container, false);
-        mMorningSwitch = v.findViewById(R.id.morning_switch_intake);
-        mLunchTimeSwitch = v.findViewById(R.id.lunchtime_switch_intake);
-        mEveningSwitch = v.findViewById(R.id.evening_switch_intake);
-        mStartDate = v.findViewById(R.id.start_date);
-        mEndDate = v.findViewById(R.id.end_date);
+        View view = inflater.inflate(R.layout.medicine_intake_fragment, container, false);
+        mMorningSwitch = view.findViewById(R.id.morning_switch_intake);
+        mLunchTimeSwitch = view.findViewById(R.id.lunchtime_switch_intake);
+        mEveningSwitch = view.findViewById(R.id.evening_switch_intake);
+        mStartDate = view.findViewById(R.id.start_date);
+        mEndDate = view.findViewById(R.id.end_date);
 
         // Initialisation du bouton 'Ajouter un médicament' et Listener dessus
-        mAddMedicineButton = v.findViewById(R.id.add_medicine_button);
-        mAddMedicineButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AddMedicineFragment addMedicineFragment = new AddMedicineFragment();
-                // Obtention du gestionnaire de fragments de l'activité parente
-                FragmentManager fm = requireActivity().getSupportFragmentManager();
+        mAddMedicineButton = view.findViewById(R.id.add_medicine_button);
+        mAddMedicineButton.setOnClickListener(v -> {
+            AddMedicineFragment addMedicineFragment = new AddMedicineFragment();
+            // Obtention du gestionnaire de fragments de l'activité parente
+            FragmentManager fm = requireActivity().getSupportFragmentManager();
 
-                // Remplacement du fragment 'MedicineIntakeFragment' par le nouveau fragment 'AddMedicineFragment'
-                fm.beginTransaction()
-                        .replace(R.id.medicine_intake_fragment_container, addMedicineFragment)
-                        .addToBackStack(null) // Ajoute le fragment à la pile de retour, ce qui permet de revenir au fragment précédent en appuyant sur le bouton retour
-                        .commit();
-            }
+            // Remplacement du fragment 'MedicineIntakeFragment' par le nouveau fragment 'AddMedicineFragment'
+            fm.beginTransaction()
+                    .replace(R.id.medicine_intake_fragment_container, addMedicineFragment)
+                    .addToBackStack(null) // Ajoute le fragment à la pile de retour, ce qui permet de revenir au fragment précédent en appuyant sur le bouton retour
+                    .commit();
         });
 
         // Initialisation du spinner 'mMedicineSpinner' et Listener dessus
-        mMedicineSpinner = v.findViewById(R.id.medicine_spinner);
+        mMedicineSpinner = view.findViewById(R.id.medicine_spinner);
         mMedicines = MedicineLab.get(getContext()).getMedicines();
 
         ArrayAdapter<Medicine> adapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_spinner_item, mMedicines);
@@ -85,11 +87,18 @@ public class MedicineIntakeFragment extends Fragment {
 
         mMedicineSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                // Permet d'enregistrer les modifications du médicament quand l'on change de médicament dans le spinner (sans devoir cliquer sur le bouton 'Valider')
+                if(mMedicine != null) {
+                    MedicineLab.get(getContext()).updateMedicine(mMedicine);
+                    //position = adapter.getPosition(mMedicine);
+                    //mMedicineSpinner.setSelection(position);
+                }
+
                 mMedicine = (Medicine) parent.getSelectedItem();
 
-                mStartDate.setText(mMedicine.getStartDate().toString());
-                mEndDate.setText(mMedicine.getEndDate().toString());
-
+                mStartDate.setText(mMedicine.getStartDate());
+                mEndDate.setText(mMedicine.getEndDate());
 
                 if (mMedicine.getMorningIntake()) {
                     mMorningSwitch.setChecked(true);
@@ -106,67 +115,87 @@ public class MedicineIntakeFragment extends Fragment {
                 } else {
                     mEveningSwitch.setChecked(false);
                 }
+
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
+
         });
 
-        mMorningSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    mMedicine.setMorningIntake(true);
-                } else if (!isChecked) {
-                    mMedicine.setMorningIntake(false);
-                }
+        mStartDate.setOnClickListener(v -> {
+
+            String startDate = mMedicine.getStartDate();
+            String[] startDateSplit = startDate.split("/");
+            int startDay = Integer.parseInt(startDateSplit[0]);
+            int startMonth = Integer.parseInt(startDateSplit[1]);
+            int startYear = Integer.parseInt(startDateSplit[2]);
+
+            Log.i("DATE", startDay + "/" + startMonth + "/" + startYear);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), (dpdView, year, month, dayOfMonth) -> {
+                String date = dayOfMonth + "/" + (month + 1) + "/" + year;
+                mStartDate.setText(date);
+                mMedicine.setStartDate(date);
+            }, startYear, (startMonth - 1), startDay);
+
+            datePickerDialog.show();
+        });
+
+        mEndDate.setOnClickListener(v -> {
+
+            String endDate = mMedicine.getEndDate();
+            String[] endDateSplit = endDate.split("/");
+            int endDay = Integer.parseInt(endDateSplit[0]);
+            int endMonth = Integer.parseInt(endDateSplit[1]);
+            int endYear = Integer.parseInt(endDateSplit[2]);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(), (dpdView, year, month, dayOfMonth) -> {
+                String date = dayOfMonth + "/" + (month + 1) + "/" + year;
+                mEndDate.setText(date);
+                mMedicine.setEndDate(date);
+            }, endYear, (endMonth - 1), endDay);
+
+            datePickerDialog.show();
+        });
+
+        mMorningSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                mMedicine.setMorningIntake(true);
+            } else {
+                mMedicine.setMorningIntake(false);
             }
         });
-        mLunchTimeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    mMedicine.setLunchTimeIntake(true);
-                } else if (!isChecked) {
-                    mMedicine.setLunchTimeIntake(false);
-                }
+        mLunchTimeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                mMedicine.setLunchTimeIntake(true);
+            } else {
+                mMedicine.setLunchTimeIntake(false);
             }
         });
 
-        mEveningSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    mMedicine.setEveningIntake(true);
-                } else if (!isChecked) {
-                    mMedicine.setEveningIntake(false);
-                }
+        mEveningSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                mMedicine.setEveningIntake(true);
+            } else {
+                mMedicine.setEveningIntake(false);
             }
         });
 
-        mValidButton = v.findViewById(R.id.medicine_intake_add_button);
-        mValidButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
+        mValidButton = view.findViewById(R.id.medicine_intake_add_button);
+        mValidButton.setOnClickListener(v -> {
+            MedicineLab.get(getContext()).updateMedicine(mMedicine);
+            Intent intent = new Intent(getContext(), MedicineListActivity.class);
+            startActivity(intent);
         });
 
-
-        return v;
+        return view;
     }
 
-    /*
+
     // Permet d'indiquer ce que l'on souhaite sauvegarder quand l'activité est détruite (rotation, ...)
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.i(TAG, "onSaveInstanceState");
-        //outState.putInt(KEY_INDEX, mCurrentIndex);
-    }*/
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        //updateMedicine();
+        outState.putSerializable(MEDICINE, mMedicine);
     }
 }
