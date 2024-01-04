@@ -69,7 +69,7 @@ public class AddMedicineFragment extends Fragment {
                 mMedicineName = mMedicineNameEditText.getText().toString();
                 mMedicine.setName(mMedicineName);
             }
-            // On retourne false pour indiquer que l'on a pas géré l'évènement et que l'on souhaite que le clavier se ferme
+            // On retourne false pour indiquer que l'on a pas géré l'évènement et que l'on souhaite que le clavier se ferme.
             return false;
         });
 

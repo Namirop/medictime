@@ -45,7 +45,7 @@ public class MedicineListActivity extends AppCompatActivity {
             Intent intent = new Intent(MedicineListActivity.this, MedicineIntakeActivity.class);
             startActivity(intent);
         });
-        // Dès que l'activité est créée (lors du lancement, après une rotation, quand on revient à cette activité, ...), on met à jour l'UI
+        // Dès que l'activité est créée (lors du lancement, après une rotation, quand on revient à cette activité, ...), on met à jour l'interface utilisateur
         updateUI();
     }
 

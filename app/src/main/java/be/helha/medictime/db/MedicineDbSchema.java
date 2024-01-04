@@ -13,5 +13,6 @@ public class MedicineDbSchema {
             public static final String LUNCH_TIME_INTAKE = "lunch_time_intake";
             public static final String EVENING_INTAKE = "evening_intake";
         }
+
     }
 }

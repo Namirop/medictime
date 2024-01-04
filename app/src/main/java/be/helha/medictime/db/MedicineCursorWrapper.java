@@ -48,6 +48,7 @@ public class MedicineCursorWrapper extends CursorWrapper {
         } else {
             medicine.setEveningIntake(false);
         }
+
         return medicine;
     }
 }

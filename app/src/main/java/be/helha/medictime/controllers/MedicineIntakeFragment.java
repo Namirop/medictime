@@ -117,6 +117,7 @@ public class MedicineIntakeFragment extends Fragment {
                 }
 
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
 
@@ -192,7 +193,7 @@ public class MedicineIntakeFragment extends Fragment {
     }
 
 
-    // Permet d'indiquer ce que l'on souhaite sauvegarder quand l'activité est détruite (rotation, ...)
+    // Permet d'indiquer ce que l'on souhaite sauvegarder quand l'activité est détruite (rotation, ...).
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);

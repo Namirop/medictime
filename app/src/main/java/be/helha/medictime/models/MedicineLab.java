@@ -91,7 +91,7 @@ public class MedicineLab implements Serializable {
 
     public void updateMedicine(Medicine medicine) {
         String uuidString = medicine.getId().toString();
-        // Permet de stocker les données dans un objet ContentValues, une sorte de dictionnaire, qui permet de stocker des paires clé/valeur
+        // Permet de stocker les données dans un objet ContentValues, une sorte de dictionnaire, qui permet de stocker des paires clé/valeur.
         ContentValues values = getContentValues(medicine);
         // On modifie la db avec les nouvelles valeurs à l'uuid correspondant
         mDatabase.update(MedicineDbSchema.MedicineTable.NAME, values, MedicineDbSchema.MedicineTable.cols.UUID + " = ?", new String[]{uuidString});

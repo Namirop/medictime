@@ -95,6 +95,7 @@ public class Medicine implements Serializable {
         mEndDate = sdf2.format(endDate);
 
     }
+
     public String getEndDate() {
         return mEndDate;
     }
