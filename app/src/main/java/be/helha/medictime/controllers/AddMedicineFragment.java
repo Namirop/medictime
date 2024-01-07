@@ -1,6 +1,9 @@
 package be.helha.medictime.controllers;
 
+import static androidx.core.content.ContextCompat.getSystemService;
+
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
@@ -61,16 +65,23 @@ public class AddMedicineFragment extends Fragment {
         mMedicineNameEditText = view.findViewById(R.id.medicine_name_edit_text);
         mMedicineNameEditText.setOnEditorActionListener((v, actionId, event) -> {
 
-            // TODO: Vérifier si le nom du médicament n'est pas déjà utilisé
             // TODO : Faire en sorte que le nom soit sauvegardé quand on quitte le champ
 
-            // Vérifie si l'on a appuyé sur le bouton 'Done' ou 'Enter' du clavier
+            // Vérifie si l'on a appuyé sur le bouton 'Done' ou 'Next' du clavier
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
                 mMedicineName = mMedicineNameEditText.getText().toString();
                 mMedicine.setName(mMedicineName);
             }
-            // On retourne false pour indiquer que l'on a pas géré l'évènement et que l'on souhaite que le clavier se ferme.
+            // On retourne false pour indiquer que l'on a pas géré l'évènement et que l'on souhaite que le clavier se ferme après avoir appuyé sur 'Done' ou 'Next'
             return false;
+        });
+
+        mMedicineNameEditText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                // Quand le focus est perdu, on sauvegarde le nom du médicament
+                mMedicineName = mMedicineNameEditText.getText().toString();
+                mMedicine.setName(mMedicineName);
+            }
         });
 
 
@@ -103,7 +114,6 @@ public class AddMedicineFragment extends Fragment {
         });
 
 
-        // TODO : Envoyer le médicament à MedicineIntakeFragment pour l'afficher
         // Initialisation du bouton 'Ajouter un médicament' + Listener
         mAddMedicineButton = view.findViewById(R.id.add_medicine_add_button);
         mAddMedicineButton.setOnClickListener(v -> {

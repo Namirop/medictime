@@ -49,7 +49,6 @@
                 android:layout_height="70dp"
                 android:orientation="horizontal"
                 android:layout_marginTop="10sp"
-                android:layout_marginBottom="20sp"
                 android:gravity="center">
 
                 <Spinner
@@ -75,34 +74,48 @@
                 android:text="DATES :"
                 android:layout_gravity="center"
                 android:textSize="28sp"
-                android:padding="10dp"
                 tools:ignore="HardcodedText" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:orientation="horizontal"
-                android:layout_marginTop="10sp"
-                android:layout_marginBottom="20sp"
-                android:gravity="center">
+                android:layout_height="100dp"
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:padding="10dp"
-                    tools:ignore="HardcodedText"
                     android:id="@+id/start_date"
-                    />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:textSize="22sp"
+                    android:text="Date de début"
+                    android:textAlignment="center"
+                    tools:ignore="HardcodedText" />
+
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_margin="10dp"
+                    android:id="@+id/calendar_start_date"
+                    android:src="@drawable/calendar" />
 
                 <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:textSize="15sp"
-                    android:padding="10dp"
-                    tools:ignore="HardcodedText"
                     android:id="@+id/end_date"
-                    />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:textSize="22sp"
+                    android:text="Date de fin"
+                    android:textAlignment="center"
+                    tools:ignore="HardcodedText" />
+
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_margin="10dp"
+                    android:id="@+id/calendar_end_date"
+                    android:src="@drawable/calendar"/>
+
             </LinearLayout>
 
         </LinearLayout>
@@ -169,6 +182,15 @@
                     android:layout_margin="5sp"
                     android:text="Valider"
                     tools:ignore="HardcodedText" />
+
+                <Button
+                    android:id="@+id/medicine_intake_delete_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10sp"
+                    android:text="Supprimer"
+                    tools:ignore="HardcodedText" />
+
             </LinearLayout>
 
         </LinearLayout>

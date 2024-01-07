@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import be.helha.medictime.R;
+import be.helha.medictime.models.Medicine;
 
 // On crée un Fragment, ce qui va créer sa vue (medicine_intake_fragment) et sa classe - controlleur (MedicineIntakeFragment) dans laquelle on va initialiser les widgets avec leur listeners
 // On crée ensuite une activité qui va contenir une classe (MedicineIntakeActivity) et sa vue (medicine_intake_activity)
@@ -24,6 +25,16 @@ public class MedicineIntakeActivity extends AppCompatActivity {
         if(fragment==null) {
             fragment = new MedicineIntakeFragment(); // La vue du fragment dans 'MedicineIntakeFragment' (v) est retournée et affichée dans le FrameLayout
             fm.beginTransaction().add(R.id.medicine_intake_fragment_container, fragment).commit();
+        }
+
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null) {
+            Medicine medicine = (Medicine) bundle.getSerializable(MedicineIntakeFragment.MEDICINE_FROM_LIST);
+            int selectedIndex = bundle.getInt(MedicineIntakeFragment.SELECTED_INDEX);
+            Bundle bundle1 = new Bundle();
+            bundle1.putInt(MedicineIntakeFragment.SELECTED_INDEX, selectedIndex);
+            bundle1.putSerializable(MedicineIntakeFragment.MEDICINE_FROM_LIST, medicine);
+            fragment.setArguments(bundle1);
         }
     }
 }
