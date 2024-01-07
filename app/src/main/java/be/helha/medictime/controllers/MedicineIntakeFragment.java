@@ -1,10 +1,8 @@
 package be.helha.medictime.controllers;
 
-import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +25,7 @@ import be.helha.medictime.R;
 import be.helha.medictime.models.Medicine;
 import be.helha.medictime.models.MedicineLab;
 
-    @SuppressLint("UseSwitchCompatOrMaterialCode")
     public class MedicineIntakeFragment extends Fragment {
-        public static final String MEDICINE_FROM_LIST = "medicine_from_list";
         private static final String MEDICINE = "medicine";
         public static final String SELECTED_INDEX = "selected_index";
         private Medicine mMedicine;
@@ -46,6 +42,7 @@ import be.helha.medictime.models.MedicineLab;
         private ImageView mEndDateIcon;
         private List<Medicine> mMedicines;
         private int selectedIndex;
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -54,13 +51,11 @@ import be.helha.medictime.models.MedicineLab;
             }
         }
 
-        // Permet d'initialiser les widgets avec leur listeners dans le cas d'un fragment, et de retourner la vue qui sera utilisée dans CrimeActivity
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
             Bundle bundle = getArguments();
             if(bundle != null) {
-                mMedicine = (Medicine) bundle.getSerializable(MEDICINE_FROM_LIST);
                 selectedIndex = bundle.getInt(SELECTED_INDEX, -1);
             }
 
@@ -68,24 +63,20 @@ import be.helha.medictime.models.MedicineLab;
             mMorningSwitch = view.findViewById(R.id.morning_switch_intake);
             mLunchTimeSwitch = view.findViewById(R.id.lunchtime_switch_intake);
             mEveningSwitch = view.findViewById(R.id.evening_switch_intake);
-            mStartDateTextView = view.findViewById(R.id.start_date);
-            mEndDateTextView = view.findViewById(R.id.end_date);
+            mStartDateTextView = view.findViewById(R.id.start_date_text_view);
+            mEndDateTextView = view.findViewById(R.id.end_date_text_view);
 
-            // Initialisation du bouton 'Ajouter un médicament' et Listener dessus
             mAddMedicineButton = view.findViewById(R.id.add_medicine_button);
             mAddMedicineButton.setOnClickListener(v -> {
                 AddMedicineFragment addMedicineFragment = new AddMedicineFragment();
-                // Obtention du gestionnaire de fragments de l'activité parente
                 FragmentManager fm = requireActivity().getSupportFragmentManager();
 
-                // Remplacement du fragment 'MedicineIntakeFragment' par le nouveau fragment 'AddMedicineFragment'
                 fm.beginTransaction()
                         .replace(R.id.medicine_intake_fragment_container, addMedicineFragment)
-                        .addToBackStack(null) // Ajoute le fragment à la pile de retour, ce qui permet de revenir au fragment précédent en appuyant sur le bouton retour
+                        .addToBackStack(null)
                         .commit();
             });
 
-            // Initialisation du spinner 'mMedicineSpinner' et Listener dessus
             mMedicineSpinner = view.findViewById(R.id.medicine_spinner);
             mMedicines = MedicineLab.get(getContext()).getMedicines();
 
@@ -100,7 +91,6 @@ import be.helha.medictime.models.MedicineLab;
                         mMedicineSpinner.setSelection(selectedIndex);
                         selectedIndex = -1;
                     } else {
-                        // Sinon, sélectionner le premier médicament
                         mMedicineSpinner.setSelection(position);
                     }
 
@@ -109,24 +99,10 @@ import be.helha.medictime.models.MedicineLab;
                     mStartDateTextView.setText(mMedicine.getStartDate());
                     mEndDateTextView.setText(mMedicine.getEndDate());
 
-                    if (mMedicine.getMorningIntake()) {
-                        mMorningSwitch.setChecked(true);
-                    } else {
-                        mMorningSwitch.setChecked(false);
-                    }
-                    if (mMedicine.getLunchTimeIntake()) {
-                        mLunchTimeSwitch.setChecked(true);
-                    } else {
-                        mLunchTimeSwitch.setChecked(false);
-                    }
-                    if (mMedicine.getEveningIntake()) {
-                        mEveningSwitch.setChecked(true);
-                    } else {
-                        mEveningSwitch.setChecked(false);
-                    }
-
+                    mMorningSwitch.setChecked(mMedicine.getMorningIntake());
+                    mLunchTimeSwitch.setChecked(mMedicine.getLunchTimeIntake());
+                    mEveningSwitch.setChecked(mMedicine.getEveningIntake());
                 }
-
                 @Override
                 public void onNothingSelected(AdapterView<?> parent) {}
 
@@ -143,7 +119,6 @@ import be.helha.medictime.models.MedicineLab;
 
                 DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(), (dpdView, year, month, dayOfMonth) -> {
                     String date = String.format(Locale.getDefault(), "%02d/%02d/%04d", dayOfMonth, (month + 1), year);
-                    Log.i("DATE", date);
                     mStartDateTextView.setText(date);
                     mMedicine.setStartDate(date);
                 }, startYear, (startMonth - 1), startDay);
@@ -170,26 +145,14 @@ import be.helha.medictime.models.MedicineLab;
             });
 
             mMorningSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if (isChecked) {
-                    mMedicine.setMorningIntake(true);
-                } else {
-                    mMedicine.setMorningIntake(false);
-                }
+                mMedicine.setMorningIntake(isChecked);
             });
             mLunchTimeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if (isChecked) {
-                    mMedicine.setLunchTimeIntake(true);
-                } else {
-                    mMedicine.setLunchTimeIntake(false);
-                }
+                mMedicine.setLunchTimeIntake(isChecked);
             });
 
             mEveningSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if (isChecked) {
-                    mMedicine.setEveningIntake(true);
-                } else {
-                    mMedicine.setEveningIntake(false);
-                }
+                mMedicine.setEveningIntake(isChecked);
             });
 
             mValidButton = view.findViewById(R.id.medicine_intake_add_button);
@@ -208,9 +171,6 @@ import be.helha.medictime.models.MedicineLab;
 
             return view;
         }
-
-
-        // Permet d'indiquer ce que l'on souhaite sauvegarder quand l'activité est détruite (rotation, ...).
         @Override
         public void onSaveInstanceState(@NonNull Bundle outState) {
             super.onSaveInstanceState(outState);

@@ -1,15 +1,8 @@
 package be.helha.medictime.db;
 
-import static java.lang.Boolean.getBoolean;
-import static java.lang.Boolean.logicalAnd;
-
 import android.database.Cursor;
 import android.database.CursorWrapper;
-import android.util.Log;
-
-import java.util.Date;
 import java.util.UUID;
-
 import be.helha.medictime.models.Medicine;
 
 public class MedicineCursorWrapper extends CursorWrapper {

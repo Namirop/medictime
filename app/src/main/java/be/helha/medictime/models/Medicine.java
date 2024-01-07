@@ -1,7 +1,7 @@
 package be.helha.medictime.models;
 
+
 import android.annotation.SuppressLint;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -11,9 +11,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
-
-// La classe Medicine doit implémenter l'interface Serializable pour permettre la sérialisation.
-// Cela est nécessaire lors de la transmission d'objets entre composants Android tels que des activités.
 public class Medicine implements Serializable {
     private UUID mId;
     public String mName;
@@ -93,9 +90,7 @@ public class Medicine implements Serializable {
         Date endDate = calendar.getTime();
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
         mEndDate = sdf2.format(endDate);
-
     }
-
     public String getEndDate() {
         return mEndDate;
     }
